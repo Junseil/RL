@@ -6,8 +6,6 @@ env.reset()
 
 observation_space = env.observation_space
 action_space = env.action_space
-P = env.P_tensor
-R = env.R_tensor
 
 _ = env.reset()
 action_mapper = {
