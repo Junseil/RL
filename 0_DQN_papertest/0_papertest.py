@@ -2,7 +2,6 @@ import random
 import math
 import matplotlib.pyplot as plt
 import numpy
-
 import torch
 from torch import nn
 import torch.nn.functional as F
