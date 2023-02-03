@@ -1,3 +1,0 @@
-# known model
-# policy iteration
-
