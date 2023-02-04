@@ -33,7 +33,7 @@ def sample_experiences(batch_size):
 
 def play_one_step(env, state, epsilon):
     action = epsilon_greedy_policy(state, epsilon)
-    next_state, reward, done, info = env.step(action)
+    next_state, reward, done, info, _ = env.step(action)
     replay_buffer.append((state, action, reward, next_state, done))
     return next_state, reward, done, info
 
