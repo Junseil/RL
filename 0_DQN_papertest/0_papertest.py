@@ -42,7 +42,7 @@ def select_action(state):
             node_activated = int(torch.argmax(q_calc))
             return node_activated
     else:
-        node_activated = random.randint(0,1)
+        node_activated = random.randint(0, 1)
         steps_done += 1
         return node_activated
 
@@ -127,7 +127,7 @@ for i_episode in range(5000):
     for t in range(1000):
         state = observation
         action = select_action(observation)
-        observation, reward, done, _ = env.step(action)
+        observation, reward, done, _, _ = env.step(action)
 
         if done:
             next_state = [0,0,0,0]
