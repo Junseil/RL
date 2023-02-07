@@ -13,7 +13,7 @@ policy = agent.policy_iteration(agent.policy)
 s = 0
 while True:
     env.render()
-    ns, reward, done, tmp, info = env.step(policy[s].argmax(axis=0))
+    ns, reward, done, tmp, _ = env.step(policy[s].argmax(axis=0))
     s = ns
     if done:
         break

@@ -27,8 +27,6 @@ class mdp:
                 [(p, s, r, t)] = self.env.P[i][j]
                 self.P[i][j][s] = p
                 self.R[i][j] = r
-        print('MDP is initialized')
-        print(f'Environment spec : Num of states = {self.ns} | Num of actions = {self.na}')
 
     def get_r_pi(self, policy):
         return (policy * self.R).sum(axis=-1)
@@ -77,7 +75,7 @@ class mdp:
                 old_v = new_v
         return new_pi
 
-    def value_itration(self):
+    def value_iteration(self):
         old_v = np.zeros(self.ns)
         while True:
             new_v\
