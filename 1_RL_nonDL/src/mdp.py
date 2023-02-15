@@ -1,6 +1,7 @@
 import numpy as np
 
-class mdp:
+
+class MDP:
     def __init__(self, gamma=0.99, error_tol=1e-3):
         self.gamma = gamma
         self.error_tol = error_tol
@@ -18,9 +19,9 @@ class mdp:
         self.na = env.action_space.n
         self.policy = np.ones([self.ns, self.na]) / self.na
 
-        self.P\
+        self.P \
             = np.array([[[0 for _ in range(self.ns)] for _ in range(self.na)] for _ in range(self.ns)])
-        self.R\
+        self.R \
             = np.array([[0 for _ in range(self.na)] for _ in range(self.ns)])
         for i in range(self.ns):
             for j in range(self.na):
@@ -78,7 +79,7 @@ class mdp:
     def value_iteration(self):
         old_v = np.zeros(self.ns)
         while True:
-            new_v\
+            new_v \
                 = (self.R + self.gamma * np.einsum('nam,m->na', self.P, old_v)).max(axis=-1)
             err = np.linalg.norm(new_v - old_v)
             if err <= self.error_tol:

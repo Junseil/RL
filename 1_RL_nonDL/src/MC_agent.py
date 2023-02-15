@@ -1,6 +1,6 @@
 import random
-
 import numpy as np
+
 
 class MC_agent:
     def __init__(self,
@@ -13,26 +13,24 @@ class MC_agent:
         self.na = na
         self.epsilon = epsilon
 
-        self.eps = 1e-10
-
-        self.n_v = np.zeros(self.ns)
-        self.s_v = np.zeros(self.ns)
         self.n_q = np.zeros((self.ns, self.na))
         self.s_q = np.zeros((self.ns, self.na))
-        self.v = np.zeros(self.ns)
         self.q = np.zeros((self.ns, self.na))
 
         self.states = []
         self.actions = []
         self.rewards = []
 
+        self.eps = 1e-10
+        self.GLIE = False
+
     def episode_stack(self, s, a, r):
         self.states.append(s)
         self.actions.append(a)
         self.rewards.append(r)
 
-    def episode_clear(self, GLIE=False):
-        if GLIE == True:
+    def episode_clear(self):
+        if self.GLIE:
             self.epsilon *= 0.9
         self.states = []
         self.actions = []
@@ -48,16 +46,12 @@ class MC_agent:
             sum_r *= self.gamma
             sum_r += r
 
-            self.n_v[s] += 1
             self.n_q[s, a] += 1
-
-            self.s_v[s] += sum_r
             self.s_q[s, a] += sum_r
 
         self.compute_values()
 
     def compute_values(self):
-        self.v = self.s_v / (self.n_v + self.eps)
         self.q = self.s_q / (self.n_q + self.eps)
 
     def get_action(self, state):
