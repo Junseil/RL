@@ -1,12 +1,12 @@
 # FrozenLake-v1 / MDP value iteration
 import gym
 from gym.envs.toy_text.frozen_lake import generate_random_map
-from src.mdp import mdp
+from src.mdp import MDP
 
 env = gym.make('FrozenLake-v1', desc=generate_random_map(size=8), is_slippery=False, render_mode='human')
 env.reset()
 
-agent = mdp()
+agent = MDP()
 agent.initialize_env(env)
 policy = agent.value_iteration()
 
