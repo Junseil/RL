@@ -2,6 +2,7 @@ import numpy as np
 import random
 import matplotlib.pyplot as plt
 
+
 # 주어진 확률에 따른 0 ~ 10점 사이의 기대보상 획득
 def get_reward(prob: float) -> int:
     reward = 0
@@ -10,15 +11,18 @@ def get_reward(prob: float) -> int:
             reward += 1
     return reward
 
+
 # 새로운 action 과 reward를 획득했을시 기존의 간이 q-table update
 def update_arm(arms: list, action: int, r: int) -> list:
     arms[action, 1] = (arms[action, 0] * arms[action, 1] + r) / (arms[action, 0] + 1)
     arms[action, 0] += 1
     return arms
 
+
 # greedy 방법을 통한 최대의 기대보상을 갖는 action (0~9 슬롯) 을 return
 def get_best_arm(arms: list) -> int:
     return np.argmax(arms[:, 1], axis=0)
+
 
 # subplot 생성
 plt.subplots(1, 1)
