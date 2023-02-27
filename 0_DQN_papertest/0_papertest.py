@@ -7,6 +7,7 @@ from torch import nn
 import torch.nn.functional as F
 import gym
 
+
 class DQN(nn.Module):
     def __init__(self, input_dim, output_dim):
         super(DQN, self).__init__()
@@ -82,11 +83,12 @@ memory = ReplayMemory(65536)
 BATCH_SIZE = 128
 discount = 0.99
 
+
 def optimize_model():
     if len(memory) < BATCH_SIZE:
         return 0
     experiences = memory.sample(BATCH_SIZE)
-    state_batch = torch.Tensor(numpy.array(experiences[0]))
+    state_batch = torch.Tensor(numpy.array(experiences[0], dtype=object))
     action_batch = torch.LongTensor(experiences[1]).unsqueeze(1)
     reward_batch = torch.Tensor(numpy.array(experiences[2]))
     next_state_batch = torch.Tensor(numpy.array(experiences[3]))
@@ -113,8 +115,10 @@ def optimize_model():
     optimizer.step()
     return loss
 
+
 points = []
 losspoints = []
+
 
 env = gym.make('CartPole-v1')
 
