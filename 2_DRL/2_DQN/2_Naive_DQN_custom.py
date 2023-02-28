@@ -1,3 +1,9 @@
+# no CNN
+# Receive physical information of the cart instead of image input.
+# On-policy
+# Does not use replay memory.
+# A simple implementation of epsilon decaying.
+
 import gym
 import numpy as np
 import torch
@@ -66,20 +72,6 @@ class Naive_DQN(nn.Module):
         self.opt.step()
 
 
-qnet = MLP(input_dim=s_dim,
-           output_dim=a_dim,
-           num_neurons=[32, 16, 8],
-           hidden_act='ReLU',
-           out_act='Identity')
-
-agent = Naive_DQN(state_dim=s_dim,
-                  action_dim=a_dim,
-                  q_net=qnet,
-                  lr=1e-4,
-                  gamma=0.99,
-                  epsilon=1.0)
-
-
 class Moving_average:
     def __init__(self,
                  alpha: float):
@@ -93,37 +85,54 @@ class Moving_average:
             self.s = self.alpha * y + (1 - self.alpha) * self.s
 
 
-# training loop
-n_eps = 10000
-print_every = 200
-alpha = 0.1
-ma = Moving_average(alpha)
-y = []
+if __name__ == '__main__':
+    qnet = MLP(input_dim=s_dim,
+               output_dim=a_dim,
+               num_neurons=[16, 32, 32],
+               hidden_act='ReLU',
+               out_act='Identity')
 
-for ep in range(n_eps):
-    env.reset()
-    cum_r = 0
-    while True:
-        s = env.state
-        s = torch.tensor(s).float().view(1, 4)
-        a = agent.get_action(s)
-        ns, r, done, info, _ = env.step(a)
+    agent = Naive_DQN(state_dim=s_dim,
+                      action_dim=a_dim,
+                      q_net=qnet,
+                      lr=1e-4,
+                      gamma=0.99,
+                      epsilon=1.0)
 
-        ns = torch.tensor(ns).float()
-        agent.update_sample(s, a, r, ns, done)
-        cum_r += r
-        if done:
-            ma.update(cum_r)
-            y.append(ma.s)
-            if ep % print_every == 0:
-                print(f"Episode {ep} || MA: {ma.s:.1f} || EPS : {agent.epsilon}")
-            if ep >= 200:
-                agent.epsilon *= 0.999
-            break
-env.close()
+    # training loop
+    n_eps = 10000
+    print_every = 200
+    alpha = 0.1
+    ma = Moving_average(alpha)
+    y = []
 
+    for ep in range(n_eps):
+        env.reset()
+        cum_r = 0
+        while True:
+            s = env.state
+            s = torch.tensor(s).float().view(1, 4)
+            a = agent.get_action(s)
+            ns, r, done, truncation, info = env.step(a)
 
-plt.plot(y)
-plt.show()
+            ns = torch.tensor(ns).float()
+            agent.update_sample(s, a, r, ns, done)
+            cum_r += r
+            if done or truncation:
+                ma.update(cum_r)
+                y.append(ma.s)
+                if ep % print_every == 0:
+                    print(f"Episode {ep} || MA: {ma.s:.1f} || EPS : {agent.epsilon}")
+                if cum_r >= min(ma.s * 1.5, 450):
+                    agent.epsilon *= 0.999
+                break
+    env.close()
 
-torch.save(agent.state_dict(), '2_Naive_DQN_custom.pt')
+    y2 = np.zeros(len(y))
+    for i in range(len(y)):
+        if i >= 99:
+            y2[i] = np.average(y[i-99:i+1])
+    plt.plot(y2)
+    plt.show()
+
+    torch.save(agent.state_dict(), '1_Naive_DQN_custom.pt')
