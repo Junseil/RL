@@ -57,11 +57,10 @@ epochs = 50000
 
 for i in range(epochs):
     y_pred = model(cur_state)
-    # if i < epochs/part:
-    #     av_softmax = np.exp((i*part/epochs)*np.array(y_pred.data))
-    # else:
-    #     av_softmax = np.exp(np.array(y_pred.data))
-    av_softmax = np.exp(np.array(y_pred.data))
+    if i < epochs/part:
+        av_softmax = np.exp((i*part/epochs)*np.array(y_pred.data))
+    else:
+        av_softmax = np.exp(np.array(y_pred.data))
     av_softmax /= av_softmax.sum()
     action = np.random.choice(10, p=av_softmax)
     cur_reward = env.choose_arm(action)

@@ -113,22 +113,26 @@ if __name__ == '__main__':
             s = env.state
             s = torch.tensor(s).float().view(1, 4)
             a = agent.get_action(s)
-            ns, r, done, info, _ = env.step(a)
+            ns, r, done, truncation, info = env.step(a)
 
             ns = torch.tensor(ns).float()
             agent.update_sample(s, a, r, ns, done)
             cum_r += r
-            if done:
+            if done or truncation:
                 ma.update(cum_r)
                 y.append(ma.s)
                 if ep % print_every == 0:
                     print(f"Episode {ep} || MA: {ma.s:.1f} || EPS : {agent.epsilon}")
-                if ep >= 200:
+                if ep >= 2000:
                     agent.epsilon *= 0.999
                 break
     env.close()
 
-    plt.plot(y)
+    y2 = np.zeros(len(y))
+    for i in range(len(y)):
+        if i >= 99:
+            y2[i] = np.average(y[i-99:i+1])
+    plt.plot(y2)
     plt.show()
 
     torch.save(agent.state_dict(), '1_Naive_DQN.pt')
