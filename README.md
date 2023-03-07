@@ -4,7 +4,7 @@
 
 0_DQN_papertest
 
-논문쓸 당시 활용했던 코드... 현재 Gym 에서의 함수가 일부 변경되어 수정 필요
+논문에 활용했던 코드... 현재 Gym 에서의 함수가 일부 변경되어 수정 필요
 
 1. RL_nonDL
 	1-1. MDP를 통한 policy iteration, value iteration
