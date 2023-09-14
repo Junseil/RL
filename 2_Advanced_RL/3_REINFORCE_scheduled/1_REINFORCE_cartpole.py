@@ -11,6 +11,8 @@ model = torch.nn.Sequential(
     torch.nn.Softmax()
 )
 
-learning_rate = 0.0009
-optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
-pred = model(torch.from_numpy(state1), )
+def discount_rewards(rewards, gamma=0.99):
+    len_r = len(rewards)
+    disc_return = torch.pow(gamma, torch.arange(len_r).float()) * rewards
+    disc_return /= disc_return.max()
+    return disc_return
