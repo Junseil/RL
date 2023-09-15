@@ -16,3 +16,4 @@ def discount_rewards(rewards, gamma=0.99):
     disc_return = torch.pow(gamma, torch.arange(len_r).float()) * rewards
     disc_return /= disc_return.max()
     return disc_return
+
