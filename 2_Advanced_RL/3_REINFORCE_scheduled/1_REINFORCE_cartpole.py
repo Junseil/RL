@@ -17,3 +17,4 @@ def discount_rewards(rewards, gamma=0.99):
     disc_return /= disc_return.max()
     return disc_return
 
+# 본가
